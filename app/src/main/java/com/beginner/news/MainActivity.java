@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
 
     private Api_Interface apiInterface;
-    public ArrayList<Article> list;
+    public ArrayList<Article> list=new ArrayList<Article>();
 
 
     @Override
@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+        final adapter eadapter = new adapter(list);
+        recyclerView.setAdapter(eadapter);
         apiInterface=ApiClient.getClient(this).create(Api_Interface.class);
         apiInterface.getTopStories().enqueue(new Callback<List<Integer>>() {
             @Override
@@ -54,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("Title",articleTitle);
                         Log.i("Link",articleURL);
                         list.add(new Article(articleTitle,articleURL));
-                        adapter eadapter=new adapter(list);
                         eadapter.notifyDataSetChanged();
                         recyclerView.setAdapter(eadapter);
+
 
 
                     } catch (JSONException e) {
