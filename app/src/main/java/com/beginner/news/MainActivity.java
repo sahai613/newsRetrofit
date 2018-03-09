@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,9 +19,9 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private adapter adapter1;
+
     private Api_Interface apiInterface;
-    private   ArrayList<Article> list;
+    public ArrayList<Article> list;
 
 
     @Override
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        apiInterface=ApiClient.getApiClient().create(Api_Interface.class);
+        apiInterface=ApiClient.getClient(this).create(Api_Interface.class);
         apiInterface.getTopStories().enqueue(new Callback<List<Integer>>() {
             @Override
             public void onResponse(Call<List<Integer>> call, Response<List<Integer>> response) {
@@ -44,15 +45,19 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
                     String json = response.body();
-                    JSONObject obj= null;
+
 
                     try {
-                        obj = new JSONObject(json);
+                        JSONObject obj = new JSONObject(json);
                         String articleTitle=obj.getString("title");
                         String articleURL=obj.getString("url");
+                        Log.i("Title",articleTitle);
+                        Log.i("Link",articleURL);
                         list.add(new Article(articleTitle,articleURL));
-                        adapter1.notifyDataSetChanged();
-                        recyclerView.setAdapter(adapter1);
+                        adapter eadapter=new adapter(list);
+                        eadapter.notifyDataSetChanged();
+                        recyclerView.setAdapter(eadapter);
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<String> call, Throwable t) {
+
 
                 }
             };
@@ -73,4 +79,3 @@ public class MainActivity extends AppCompatActivity {
         });
 
     };}
-

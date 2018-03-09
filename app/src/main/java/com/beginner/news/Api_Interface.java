@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 public interface Api_Interface {
 
     @GET("v0/topstories.json?print=pretty")
-    Call<List<Integer>> getTopStories();
+    Call <List<Integer>> getTopStories();
     @GET("v0/item/{articleid}.json?print=pretty")
     Call<String> getArticle(@Path("articleid") int id);
 
